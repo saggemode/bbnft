@@ -1,9 +1,9 @@
-import { CircularProgress } from "@mui/material";
+//import { CircularProgress } from "@mui/material";
 import axios from "axios";
 import Link from "next/link";
 import React, { useEffect, useReducer } from "react";
-import Layout from "../../components/common/Layout/Layout";
-import { toast } from "react-toastify";
+import Layout from "../../components/Layout";
+import cogoToast from "cogo-toast";
 import { getError } from "../../utils/errors";
 
 function reducer(state, action) {
@@ -61,15 +61,15 @@ const Users = () => {
       dispatch({ type: "DELETE_REQUEST" });
       await axios.delete(`/api/admin/users/${userId}`);
       dispatch({ type: "DELETE_SUCCESS" });
-      toast.success("User deleted successfully");
+      cogoToast.success("User deleted successfully");
     } catch (err) {
       dispatch({ type: "DELETE_FAIL" });
-      toast.error(getError(err));
+      cogoToast.error(getError(err));
     }
   };
   return (
     <Layout title="Admin Users">
-      <div className="grid md:grid-cols-4 md:gap-5">
+      <div className="grid md:grid-cols-4 md:gap-5 pt-20">
         <div>
           <ul>
             <li>
@@ -79,7 +79,7 @@ const Users = () => {
               <Link href="/admin/orders">Orders</Link>
             </li>
             <li>
-              <Link href="/admin/products">Products</Link>
+              <Link href="/admin/posts">Posts</Link>
             </li>
             <li>
               <Link href="/admin/users">
@@ -89,12 +89,12 @@ const Users = () => {
           </ul>
         </div>
         <div className="overflow-x-auto md:col-span-3">
-        {loadingDelete && <CircularProgress />}
+        {loadingDelete && "loading"}
 
        
           <h1 className="mb-4 text-xl">Users</h1>
           {loading ? (
-            <CircularProgress />
+            "loading"
           ) : error ? (
             <div className="alert-error">{error}</div>
           ) : (

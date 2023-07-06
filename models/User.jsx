@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema(
         "https://res.cloudinary.com/next-ecom-tailwind/image/upload/v1657790655/cemkt3z4fefvnpxvnvzk.png",
     },
     isAdmin: { type: Boolean, required: true, default: false },
+    isAuthorized: { type: Boolean, required: true, default: false },
   },
   {
     timestamps: true,

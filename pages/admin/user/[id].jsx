@@ -1,11 +1,10 @@
-import { Checkbox, CircularProgress } from "@mui/material";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useReducer, useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
-import Layout from "../../../components/common/Layout/Layout";
+import cogoToast from "cogo-toast";
+import Layout from "../../../components/Layout";
 import { getError } from "../../../utils/errors";
 
 function reducer(state, action) {
@@ -76,49 +75,24 @@ const AdminUserEditScreen = () => {
 
   const router = useRouter();
 
-  //   const uploadHandler = async (e, imageField = "image") => {
-  //     const url = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`;
-  //     try {
-  //       dispatch({ type: "UPLOAD_REQUEST" });
-  //       const {
-  //         data: { signature, timestamp },
-  //       } = await axios("/api/admin/cloudinary-sign");
-
-  //       const file = e.target.files[0];
-  //       const formData = new FormData();
-  //       formData.append("file", file);
-  //       formData.append("signature", signature);
-  //       formData.append("timestamp", timestamp);
-  //       formData.append("api_key", process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY);
-  //       const { data } = await axios.post(url, formData);
-  //       dispatch({ type: "UPLOAD_SUCCESS" });
-  //       setValue(imageField, data.secure_url);
-  //       toast.success("File uploaded successfully");
-  //     } catch (err) {
-  //       dispatch({ type: "UPLOAD_FAIL", payload: getError(err) });
-  //       toast.error(getError(err));
-  //     }
-  //   };
-
   const submitHandler = async ({ name, isAdmin }) => {
     try {
       dispatch({ type: "UPDATE_REQUEST" });
       await axios.put(`/api/admin/users/${userId}`, {
         name,
         isAdmin,
-        //image,
       });
       dispatch({ type: "UPDATE_SUCCESS" });
-      toast.success("User updated successfully");
+      cogoToast.success("User updated successfully");
       router.push("/admin/users");
     } catch (err) {
       dispatch({ type: "UPDATE_FAIL", payload: getError(err) });
-      toast.error(getError(err));
+      cogoToast.error(getError(err));
     }
   };
   return (
     <Layout title={`Edit User ${userId}`}>
-      <div className="grid md:grid-cols-4 md:gap-5">
+      <div className="grid md:grid-cols-4 md:gap-5 pt-20">
         <div>
           <ul>
             <li>
@@ -128,7 +102,7 @@ const AdminUserEditScreen = () => {
               <Link href="/admin/orders">Orders</Link>
             </li>
             <li>
-              <Link href="/admin/products">Products</Link>
+              <Link href="/admin/posts">Posts</Link>
             </li>
             <li>
               <Link href="/admin/users">
@@ -139,7 +113,7 @@ const AdminUserEditScreen = () => {
         </div>
         <div className="md:col-span-3">
           {loading ? (
-            <div>{loading && <CircularProgress></CircularProgress>}</div>
+            <div>{loading && "loading"}</div>
           ) : error ? (
             <div className="alert-error">{error}</div>
           ) : (
@@ -164,50 +138,35 @@ const AdminUserEditScreen = () => {
                 )}
               </div>
 
-              {/* <div className="mb-4">
-                <label htmlFor="image">image</label>
-                <input
-                  type="text"
-                  className="w-full"
-                  id="image"
-                  {...register("image", {
-                    required: "Please enter image",
-                  })}
-                />
-                {errors.image && (
-                  <div className="text-red-500">{errors.image.message}</div>
-                )}
-              </div>
-
-              <div className="mb-4">
-                <label htmlFor="imageFile">Upload image</label>
-                <input
-                  type="file"
-                  className="w-full"
-                  id="imageFile"
-                  onChange={uploadHandler}
-                />
-
-                {loadingUpload && <div>Uploading....</div>}
-              </div> */}
-
               <div className="mb-4">
                 <label htmlFor="IsAdmin">is Admin</label>
-                <Checkbox
-                  onClick={(e) => setIsAdmin(e.target.checked)}
-                  checked={isAdmin}
-                  name="isAdmin"
-                />
+
+                <div className="flex items-center mb-4">
+                  <input
+                    id="default-checkbox"
+                    type="checkbox"
+                    onClick={(e) => setIsAdmin(e.target.checked)}
+                    checked={isAdmin}
+                    name="isAdmin"
+                    className="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                  />
+                  <label
+                    htmlFor="default-checkbox"
+                    className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                  >
+                    is Admin
+                  </label>
+                </div>
               </div>
 
               <div className="mb-4">
                 <button disabled={loadingUpdate} className="primary-button">
                   {loadingUpdate ? "Loading" : "Update"}
                 </button>
-                {loadingUpdate && <CircularProgress />}
+                {loadingUpdate && "Loading"}
               </div>
               <div className="mb-4">
-                <Link href={`/admin/products`}>Back</Link>
+                <Link href={`/admin/posts`}>Back</Link>
               </div>
             </form>
           )}

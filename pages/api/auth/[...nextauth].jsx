@@ -2,13 +2,13 @@ import bcryptjs from "bcryptjs";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import User from "../../../models/User";
-import db from "../../../utils/db";
+import db from "../../../lib/db";
 
 export default NextAuth({
   session: {
     strategy: "jwt",
   },
-  callbacks: {
+  callbacks: {  
     async jwt({ token, user }) {
       if (user?._id) token._id = user._id;
       if (user?.isAdmin) token.isAdmin = user.isAdmin;

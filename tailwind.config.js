@@ -1,87 +1,95 @@
-/** @type {import('tailwindcss').Config} */
-// module.exports = {
-//   content: [
-//     './pages/**/*.{js,ts,jsx,tsx}',
-//     './components/**/*.{js,ts,jsx,tsx}',
-//   ],
-//   safelist: ['outline-none'],
-//   theme: {
-//     extend: {
-//       maxWidth: {
-//         '8xl': '1920px',
-//       },
-//       colors: {
-//         primary: 'var(--primary)',
-//         'primary-2': 'var(--primary-2)',
-//         secondary: 'var(--secondary)',
-//         'secondary-2': 'var(--secondary-2)',
-//         hover: 'var(--hover)',
-//         'hover-1': 'var(--hover-1)',
-//         'hover-2': 'var(--hover-2)',
-//         'accent-0': 'var(--accent-0)',
-//         'accent-1': 'var(--accent-1)',
-//         'accent-2': 'var(--accent-2)',
-//         'accent-3': 'var(--accent-3)',
-//         'accent-4': 'var(--accent-4)',
-//         'accent-5': 'var(--accent-5)',
-//         'accent-6': 'var(--accent-6)',
-//         'accent-7': 'var(--accent-7)',
-//         'accent-8': 'var(--accent-8)',
-//         'accent-9': 'var(--accent-9)',
-//         violet: 'var(--violet)',
-//         'violet-light': 'var(--violet-light)',
-//         'violet-dark': 'var(--violet-dark)',
-//         pink: 'var(--pink)',
-//         'pink-light': 'var(--pink-light)',
-//         cyan: 'var(--cyan)',
-//         blue: 'var(--blue)',
-//         green: 'var(--green)',
-//         red: 'var(--red)',
-//       },
-//       textColor: {
-//         base: 'var(--text-base)',
-//         primary: 'var(--text-primary)',
-//         secondary: 'var(--text-secondary)',
-//       },
-//       boxShadow: {
-//         'outline-normal': '0 0 0 2px var(--accent-2)',
-//         magical:
-//           'rgba(0, 0, 0, 0.02) 0px 30px 30px, rgba(0, 0, 0, 0.03) 0px 0px 8px, rgba(0, 0, 0, 0.05) 0px 1px 0px',
-//       },
-//       lineHeight: {
-//         'extra-loose': '2.2',
-//       },
-//       scale: {
-//         120: '1.2',
-//       },
-//     },
-//   },
-// }
-
+const {spacing} = require('tailwindcss/defaultTheme')
 
 module.exports = {
-  content: [
-    "./pages/**/*.{js,ts,jsx,tsx}",
-    "./components/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
+  darkMode: 'class', // or 'media' or 'class'
   theme: {
-    screens: {
-      'sm': '640px',
-      'md': '768px',
-      'lg': '1024px',
-      'xl': '1280px',
-      '2xl': '1536px',
-     },
     extend: {
-      colors: {
-        amazon_blue: {
-          light: '#232F3E',
-          DEFAULT: '#131921',
-          mlight: '#3d456e',
-          xlight: '#4a548a',
-        },
+      boxShadow: {
+        2: '0 1px 3px 0 rgb(11 17 29 / 98%), 0 1px 2px 0 rgb(9 18 35 / 90%)',
       },
+      fontFamily: {
+        sans: ['Inter'],
+      },
+      typography: theme => ({
+        DEFAULT: {
+          css: {
+            color: theme('colors.gray.700'),
+            a: {
+              color: theme('colors.yellow.500'),
+              '&:hover': {
+                color: theme('colors.yellow.700'),
+              },
+              code: {color: theme('colors.yellow.400')},
+            },
+            pre: {
+              backgroundColor: theme('colors.gray.900'),
+              color: theme('colors.gray.50'),
+            },
+            'h1,h2,h3,h4': {
+              'scroll-margin-top': spacing[32],
+            },
+            code: {color: theme('colors.yellow.500')},
+            'blockquote p:first-of-type::before': false,
+            'blockquote p:last-of-type::after': false,
+          },
+        },
+        dark: {
+          css: {
+            color: theme('colors.gray.50'),
+            a: {
+              color: theme('colors.yellow.500'),
+              '&:hover': {
+                color: theme('colors.yellow.700'),
+              },
+              code: {color: theme('colors.yellow.400')},
+            },
+            blockquote: {
+              borderLeftColor: theme('colors.gray.100'),
+              color: theme('colors.gray.300'),
+            },
+            pre: {
+              backgroundColor: theme('colors.gray.300'),
+              color: theme('colors.gray.900'),
+            },
+            'h1,h2,h3,h4': {
+              color: theme('colors.white'),
+              'scroll-margin-top': spacing[32],
+            },
+            hr: {borderColor: theme('colors.gray.700')},
+            ol: {
+              li: {
+                '&:before': {color: theme('colors.gray.500')},
+              },
+            },
+            ul: {
+              li: {
+                '&:before': {backgroundColor: theme('colors.gray.500')},
+              },
+            },
+            strong: {color: theme('colors.gray.300')},
+            thead: {
+              color: theme('colors.gray.100'),
+            },
+            tbody: {
+              tr: {
+                borderBottomColor: theme('colors.gray.700'),
+              },
+            },
+          },
+        },
+      }),
     },
   },
-  plugins: [require("@tailwindcss/line-clamp")],
-};
+  variants: {
+    extend: {
+      typography: ['dark'],
+      boxShadow: ['dark'],
+    },
+  },
+  plugins: [
+    require('@tailwindcss/typography')({
+      modifiers: [],
+    }),
+  ],
+}

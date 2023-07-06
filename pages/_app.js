@@ -1,13 +1,16 @@
 import "../styles/globals.css";
-import { SessionProvider, useSession } from 'next-auth/react';
-import { StoreProvider } from '../utils/Store';
-import { useRouter } from 'next/router';
-import { PayPalScriptProvider } from '@paypal/react-paypal-js';
+import { SessionProvider, useSession } from "next-auth/react";
+import { StoreProvider } from "../utils/Store";
+import { ThemeProvider } from "next-themes";
+import NextNProgress from "nextjs-progressbar";
+import { useRouter } from "next/router";
+
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   return (
     <SessionProvider session={session}>
+    <NextNProgress />
     <StoreProvider>
-      <PayPalScriptProvider deferLoading={true}>
+      <ThemeProvider attribute="class">
         {Component.auth ? (
           <Auth adminOnly={Component.auth.adminOnly}>
             <Component {...pageProps} />
@@ -15,7 +18,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
         ) : (
           <Component {...pageProps} />
         )}
-      </PayPalScriptProvider>
+      </ThemeProvider>
     </StoreProvider>
   </SessionProvider>
   );
@@ -25,14 +28,14 @@ function Auth({ children, adminOnly }) {
   const { status, data: session } = useSession({
     required: true,
     onUnauthenticated() {
-      router.push('/unauthorized?message=login required');
+      router.push("/unauthorized?message=login required");
     },
   });
-  if (status === 'loading') {
+  if (status === "loading") {
     return <div>Loading...</div>;
   }
   if (adminOnly && !session.user.isAdmin) {
-    router.push('/unauthorized?message=admin login required');
+    router.push("/unauthorized?message=admin login required");
   }
 
   return children;

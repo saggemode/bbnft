@@ -1,69 +1,55 @@
 import React from "react";
-import axios from "axios";
-import { useContext } from "react";
-import { toast } from "react-toastify";
-import ProductItem from "../components/Product/ProductItem";
+import db from "../lib/db";
 
-import db from "../utils/db";
-import { Store } from "../utils/Store";
-import Product from "../models/Product";
-import Layout from "../components/common/Layout/Layout";
-import Marquee from "../components/ui/Marquee/Marquee";
-import Food from "../components/Product/Food";
-import ProductHeadline from "../components/Product/ProductSlide";
+import Post from "../models/Post";
+import Layout from "../components/Layout";
+import Afirst from "../components/Afirst";
+import Asecond from "../components/Asecond";
 
-export default function Home({ products }) {
-  const { state, dispatch } = useContext(Store);
-  const { cart } = state;
+import Athird from "../components/Athird";
+// import Afourth from "../components/Afourth";
 
-  const addToCartHandler = async (product) => {
-    const existItem = cart.cartItems.find((x) => x.slug === product.slug);
-    const quantity = existItem ? existItem.quantity + 1 : 1;
-    const { data } = await axios.get(`/api/products/${product._id}`);
-
-    if (data.countInStock < quantity) {
-      return toast.error("Sorry. Product is out of stock");
-    }
-    dispatch({ type: "CART_ADD_ITEM", payload: { ...product, quantity } });
-
-    toast.success("Product added to the cart");
+export default function Home({ posts }) {
+  const bg = {
+    background: "url('/images/banner.png') no-repeat",
+    backgroundPosition: "right",
+    //height: "400"
   };
-
   return (
-    <Layout title="home" description="Tochi store">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4 pt-4">
-        {products.slice(0, 4).map((product) => (
-          <ProductItem
-            product={product}
-            key={product.slug}
-            addToCartHandler={addToCartHandler}
-          ></ProductItem>
-        ))}
-      </div>
-      <div className="pt-3">
-        <Marquee>
-          {products.map((product) => (
-            <ProductHeadline
-              key={product.slug}
-              product={product}
-              addToCartHandler={addToCartHandler}
-              variant="slim"
-            />
-          ))}
-        </Marquee>
-      </div>
+    <Layout>
+      <section className="py-16" style={bg}>
+        <div className="container mx-auto md:px-20">
+          <Afirst posts={posts} key={posts.slug}></Afirst>
+        </div>
+      </section>
 
-      <Food />
+      <section className="container mx-auto md:px-20 py-10">
+        <h1 className="font-bold text-4xl py-12 text-center">Latest Posts</h1>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-14">
+          {posts.map((post) => (
+            <Asecond
+              post={post}
+              key={post.slug}
+              addToCartHandler={"addToCartHandler"}
+            ></Asecond>
+          ))}
+        </div>
+      </section>
+
+      <Athird posts={posts} key={posts.slug}></Athird>
+
+     
     </Layout>
   );
 }
 
 export async function getServerSideProps() {
   await db.connect();
-  const products = await Product.find().lean();
+  const posts = await Post.find().lean();
   return {
     props: {
-      products: products.map(db.convertDocToObj),
+      posts: posts.map(db.convertDocToObj),
     },
   };
 }

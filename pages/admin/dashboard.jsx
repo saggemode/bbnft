@@ -13,8 +13,9 @@ import {
 } from "chart.js";
 import React, { useEffect, useReducer } from "react";
 import { getError } from "../../utils/errors";
-import { CircularProgress } from "@mui/material";
-import Layout from "../../components/common/Layout/Layout";
+
+import Layout from "../../components/Layout";
+import { blogConstant } from "../../client/constants";
 
 ChartJS.register(
   CategoryScale,
@@ -36,11 +37,11 @@ export const options = {
 
 function reducer(state, action) {
   switch (action.type) {
-    case "FETCH_REQUEST":
+    case blogConstant.FETCH_REQUEST:
       return { ...state, loading: true, error: "" };
-    case "FETCH_SUCCESS":
+    case blogConstant.FETCH_SUCCESS:
       return { ...state, loading: false, summary: action.payload, error: "" };
-    case "FETCH_FAIL":
+    case blogConstant.FETCH_FAIL:
       return { ...state, loading: false, error: action.payload };
     default:
       state;
@@ -56,11 +57,11 @@ function AdminDashboardScreen() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        dispatch({ type: "FETCH_REQUEST" });
+        dispatch({ type: blogConstant.FETCH_REQUEST });
         const { data } = await axios.get(`/api/admin/summary`);
-        dispatch({ type: "FETCH_SUCCESS", payload: data });
+        dispatch({ type: blogConstant.FETCH_SUCCESS, payload: data });
       } catch (err) {
-        dispatch({ type: "FETCH_FAIL", payload: getError(err) });
+        dispatch({ type: blogConstant.FETCH_FAIL, payload: getError(err) });
       }
     };
 
@@ -80,7 +81,7 @@ function AdminDashboardScreen() {
 
   return (
     <Layout title="Admin Dashboard">
-      <div className="grid  md:grid-cols-4 md:gap-5">
+      <div className="grid  md:grid-cols-4 md:gap-5 pt-20">
         <div>
           <ul>
             <li>
@@ -92,7 +93,7 @@ function AdminDashboardScreen() {
               <Link href="/admin/orders">Orders</Link>
             </li>
             <li>
-              <Link href="/admin/products">Products</Link>
+              <Link href="/admin/posts">Posts</Link>
             </li>
             <li>
               <Link href="/admin/users">Users</Link>
@@ -102,7 +103,7 @@ function AdminDashboardScreen() {
         <div className="md:col-span-3">
           <h1 className="mb-4 text-xl">Admin Dashboard</h1>
           {loading ? (
-            <CircularProgress />
+            "Loading"
           ) : error ? (
             <div className="alert-error">{error}</div>
           ) : (
@@ -120,8 +121,8 @@ function AdminDashboardScreen() {
                 </div>
                 <div className="card m-5 p-5">
                   <p className="text-3xl">{summary.productsCount} </p>
-                  <p>Products</p>
-                  <Link href="/admin/products">View products</Link>
+                  <p>Posts</p>
+                  <Link href="/admin/posts">View posts</Link>
                 </div>
                 <div className="card m-5 p-5">
                   <p className="text-3xl">{summary.usersCount} </p>

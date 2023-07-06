@@ -1,16 +1,14 @@
 import React, { useEffect, useReducer } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
+import cogoToast from "cogo-toast";
 import { getError } from "../utils/errors";
 import axios from "axios";
-import Image from "next/image";
-import Layout from "../components/common/Layout/Layout";
-
+import Layout from "../components/Layout";
+import Sidebar from "../components/Sidebar";
 
 function reducer(state, action) {
   switch (action.type) {
- 
     case "UPLOAD_REQUEST":
       return { ...state, loadingUpload: true, errorUpload: "" };
     case "UPLOAD_SUCCESS":
@@ -34,7 +32,6 @@ export default function ProfileScreen() {
     error: "",
   });
 
-
   const {
     handleSubmit,
     register,
@@ -49,7 +46,7 @@ export default function ProfileScreen() {
     setValue("image", session.user.image);
   }, [session.user, setValue]);
 
-  const submitHandler = async ({ name, email,image, password }) => {
+  const submitHandler = async ({ name, email, image, password }) => {
     try {
       await axios.put("/api/auth/update", {
         name,
@@ -62,12 +59,13 @@ export default function ProfileScreen() {
         email,
         password,
       });
-      toast.success("Profile updated successfully");
+      cogoToast.success("Profile updated successfully");
+
       if (result.error) {
-        toast.error(result.error);
+        cogoToast.error(result.err);
       }
     } catch (err) {
-      toast.error(getError(err));
+      cogoToast.error(getError(err));
     }
   };
 
@@ -88,24 +86,19 @@ export default function ProfileScreen() {
       const { data } = await axios.post(url, formData);
       dispatch({ type: "UPLOAD_SUCCESS" });
       setValue(imageField, data.secure_url);
-      toast.success("File uploaded successfully");
+
+      cogoToast.success("File uploaded successfully");
     } catch (err) {
       dispatch({ type: "UPLOAD_FAIL", payload: getError(err) });
-      toast.error(getError(err));
+      cogoToast.error(getError(err));
     }
   };
 
   return (
     <Layout title="Profile">
-      <div className="grid md:grid-cols-4 md:gap-5">
+      <div className="grid md:grid-cols-4 md:gap-5 pt-20">
         <div>
-        <Image
-            src={session.user.image}
-            alt={session.user.name}
-            width={640}
-            height={640}
-            layout="responsive"
-          ></Image>
+          <Sidebar />
         </div>
 
         <div className="md:col-span-3">
